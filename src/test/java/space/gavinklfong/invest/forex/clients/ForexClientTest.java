@@ -16,11 +16,13 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import reactor.core.publisher.Flux;
+import reactor.test.StepVerifier;
 import space.gavinklfong.invest.InvestApplication;
 import space.gavinklfong.invest.forex.dtos.ForexRate;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.List;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
@@ -64,28 +66,28 @@ public class ForexClientTest {
     @Test
     void givenLatestRates_whenGetLatestRates_thenReturnResult() throws JsonProcessingException {
 
+        final List<ForexRate> FOREX_RATES = asList(
+                ForexRate.builder().baseCurrency("GBP")
+                        .counterCurrency("USD")
+                        .buyRate(1.1)
+                        .sellRate(1.2)
+                        .timestamp(LocalDateTime.now())
+                        .build());
+
         // Given
         wireMockRule.stubFor(get(urlEqualTo("/rates/latest"))
                 .willReturn(aResponse()
                         .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                        .withBody(objectMapper.writeValueAsString(
-                                        asList(
-                                                ForexRate.builder().baseCurrency("GBP")
-                                                        .counterCurrency("USD")
-                                                        .buyRate(1.1)
-                                                        .sellRate(1.2)
-                                                        .timestamp(LocalDateTime.now())
-                                                        .build()
-                                        )
-                                )
-                        ))
+                        .withBody(objectMapper.writeValueAsString(FOREX_RATES)))
         );
 
         // When
         Flux<ForexRate> rates = forexClient.getLatestRates();
 
         // Then
-        log.info("rates: {}", rates.blockFirst());
+        StepVerifier.create(rates)
+                .expectNext(FOREX_RATES.get(0))
+                .expectComplete();
     }
 
 }
