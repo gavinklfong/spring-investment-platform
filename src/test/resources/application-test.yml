@@ -1,0 +1,25 @@
+app:
+  forex:
+    service:
+      url: http://localhost:8081
+      api-key: 169b5bd4-01d0-4bfc-8b82-656b85c2cbdc
+
+logging:
+  level:
+    space:
+      gavinklfong:
+        invest:
+          forex:
+            clients:
+              ForexClient: TRACE
+
+reactive:
+  feign:
+    circuit:
+      breaker:
+        enabled: true
+    client:
+      config:
+        forex-client:
+          options: # reactivefeign.webclient.WebReactiveOptions
+            readTimeoutMillis: 5000
