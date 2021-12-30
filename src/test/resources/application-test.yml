@@ -17,9 +17,12 @@ reactive:
   feign:
     circuit:
       breaker:
-        enabled: true
+        enabled: false
     client:
       config:
         forex-client:
           options: # reactivefeign.webclient.WebReactiveOptions
-            readTimeoutMillis: 5000
+            readTimeoutMillis: 2000
+            writeTimeoutMillis: 2000
+            responseTimeoutMillis: 2000
+
