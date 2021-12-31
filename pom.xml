@@ -16,13 +16,10 @@
 	<properties>
 		<java.version>11</java.version>
 		<spring-cloud.version>2021.0.0</spring-cloud.version>
-		<testcontainers.version>1.16.2</testcontainers.version>
+		<wiremock-jre8.version>2.32.0</wiremock-jre8.version>
+		<feign-reactor-spring-cloud-starter.version>3.1.5</feign-reactor-spring-cloud-starter.version>
 	</properties>
 	<dependencies>
-<!--		<dependency>-->
-<!--			<groupId>org.springframework.boot</groupId>-->
-<!--			<artifactId>spring-boot-starter-data-cassandra-reactive</artifactId>-->
-<!--		</dependency>-->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-webflux</artifactId>
@@ -32,20 +29,10 @@
 			<artifactId>spring-boot-starter-validation</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-starter-circuitbreaker-reactor-resilience4j</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>com.playtika.reactivefeign</groupId>
 			<artifactId>feign-reactor-spring-cloud-starter</artifactId>
-			<version>3.1.5</version>
+			<version>${feign-reactor-spring-cloud-starter.version}</version>
 			<type>pom</type>
-		</dependency>
-
-		<dependency>
-			<groupId>com.playtika.reactivefeign</groupId>
-			<artifactId>feign-reactor-cloud</artifactId>
-			<version>3.1.5</version>
 		</dependency>
 
 		<dependency>
@@ -63,21 +50,11 @@
 			<artifactId>reactor-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-<!--		<dependency>-->
-<!--			<groupId>org.testcontainers</groupId>-->
-<!--			<artifactId>cassandra</artifactId>-->
-<!--			<scope>test</scope>-->
-<!--		</dependency>-->
-		<dependency>
-			<groupId>org.testcontainers</groupId>
-			<artifactId>junit-jupiter</artifactId>
-			<scope>test</scope>
-		</dependency>
 
 		<dependency>
 			<groupId>com.github.tomakehurst</groupId>
 			<artifactId>wiremock-jre8</artifactId>
-			<version>2.32.0</version>
+			<version>${wiremock-jre8.version}</version>
 			<scope>test</scope>
 		</dependency>
 
@@ -88,13 +65,6 @@
 				<groupId>org.springframework.cloud</groupId>
 				<artifactId>spring-cloud-dependencies</artifactId>
 				<version>${spring-cloud.version}</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
-			<dependency>
-				<groupId>org.testcontainers</groupId>
-				<artifactId>testcontainers-bom</artifactId>
-				<version>${testcontainers.version}</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>

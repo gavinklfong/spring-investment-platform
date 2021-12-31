@@ -3,7 +3,6 @@ package space.gavinklfong.invest.forex.clients;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.WireMockServer;
-import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
@@ -23,14 +22,10 @@ import space.gavinklfong.invest.InvestApplication;
 import space.gavinklfong.invest.forex.dtos.ForexRate;
 import space.gavinklfong.invest.forex.dtos.ForexRateBooking;
 
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.List;
-
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
 import static com.github.tomakehurst.wiremock.stubbing.Scenario.STARTED;
-import static java.util.Arrays.asList;
+import static java.lang.String.format;
 import static space.gavinklfong.invest.forex.clients.TestConstants.*;
 
 @SpringBootTest(classes = {InvestApplication.class}, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -87,6 +82,25 @@ public class ForexClientTest {
     }
 
     @Test
+    void givenLatestRatesForSpecificCurrencies_whenGetLatestRates_thenReturnResult() throws JsonProcessingException {
+        // Given
+        wireMockRule.stubFor(get(urlEqualTo(format("/rates/latest/%s/%s", GBP_USD_RATE.getBaseCurrency(), GBP_USD_RATE.getCounterCurrency())))
+                .willReturn(aResponse()
+                        .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                        .withBody(objectMapper.writeValueAsString(FOREX_RATES))
+                )
+        );
+
+        // When
+        Mono<ForexRate> rates = forexClient.getLatestRate(GBP_USD_RATE.getBaseCurrency(), GBP_USD_RATE.getCounterCurrency());
+
+        // Then
+        StepVerifier.create(rates)
+                .expectNext(GBP_USD_RATE)
+                .expectComplete();
+    }
+
+    @Test
     void givenRateAvailableForBooking_whenSubmitBookingReq_thenReturnBooking() throws JsonProcessingException {
         // Given
         wireMockRule.stubFor(post(urlEqualTo("/rates/book"))
@@ -128,8 +142,8 @@ public class ForexClientTest {
     @Test
     void given1stAnd2ndAttempTimeoutAnd3rdAttemptSuccess_whenSubmitBookingReq_thenReturnRateBooking() throws JsonProcessingException {
         // Given
-        setupStubForRateBooking("retry", STARTED, "1st request received", 5000);
-        setupStubForRateBooking("retry", "1st request received", "2nd request received", 5000);
+        setupStubForRateBooking("retry", STARTED, "1st request received", 30000);
+        setupStubForRateBooking("retry", "1st request received", "2nd request received", 30000);
         setupStubForRateBooking("retry", "2nd request received", "3rd request received", 1000);
 
         // When

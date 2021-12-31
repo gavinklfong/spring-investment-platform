@@ -6,23 +6,18 @@ app:
 
 logging:
   level:
-    space:
-      gavinklfong:
-        invest:
-          forex:
-            clients:
-              ForexClient: TRACE
+    space.gavinklfong.invest.forex.clients.ForexClient: TRACE
 
 reactive:
   feign:
     circuit:
       breaker:
         enabled: false
-    client:
-      config:
-        forex-client:
-          options: # reactivefeign.webclient.WebReactiveOptions
-            readTimeoutMillis: 2000
-            writeTimeoutMillis: 2000
-            responseTimeoutMillis: 2000
+#    client:
+#      config:
+#        forex-client:
+#          options: # reactivefeign.webclient.WebReactiveOptions
+#            readTimeoutMillis: 2000
+#            writeTimeoutMillis: 2000
+#            responseTimeoutMillis: 2000
 

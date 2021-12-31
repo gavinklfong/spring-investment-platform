@@ -1,17 +1,11 @@
 package space.gavinklfong.invest.forex.clients.config;
 
-import feign.Feign;
-import feign.FeignException;
-import feign.Response;
 import feign.RetryableException;
-import feign.codec.ErrorDecoder;
-import lombok.extern.slf4j.Slf4j;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpHeaders;
+import reactivefeign.ReactiveOptions;
 import reactivefeign.client.ReactiveHttpRequestInterceptor;
 import reactivefeign.client.ReactiveHttpRequestInterceptors;
 import reactivefeign.client.ReactiveHttpResponse;
@@ -21,9 +15,7 @@ import reactivefeign.client.statushandler.ReactiveStatusHandler;
 import reactivefeign.client.statushandler.ReactiveStatusHandlers;
 import reactivefeign.retry.BasicReactiveRetryPolicy;
 import reactivefeign.retry.ReactiveRetryPolicy;
-import reactivefeign.retry.SimpleReactiveRetryPolicy;
-import reactivefeign.spring.config.ReactiveRetryPolicies;
-import reactivefeign.utils.HttpStatus;
+import reactivefeign.webclient.WebReactiveOptions;
 import space.gavinklfong.invest.forex.clients.ForexClient;
 
 import java.time.Clock;
@@ -37,7 +29,7 @@ public class ForexClientConfig {
     @Value("${app.forex.service.api-key}")
     private String apiKey;
 
-    private static final String API_KEY_HEADER = "API_KEY";
+    private static final String API_KEY_HEADER = "X-API-KEY";
 
     @Bean
     public ReactiveHttpRequestInterceptor apiKeyIntercepter() {
@@ -65,5 +57,14 @@ public class ForexClientConfig {
         return (methodKey, response) -> {
             return new RetryableException(response.status(), "", null, Date.from(Instant.EPOCH), null);
         };
+    }
+
+    @Bean
+    public ReactiveOptions reactiveOptions() {
+        return new WebReactiveOptions.Builder()
+                .setReadTimeoutMillis(2000)
+                .setWriteTimeoutMillis(2000)
+                .setResponseTimeoutMillis(2000)
+                .build();
     }
 }
