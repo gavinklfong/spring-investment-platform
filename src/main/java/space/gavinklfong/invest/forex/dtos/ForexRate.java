@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.With;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 
 @Data
@@ -13,7 +14,7 @@ import java.time.LocalDateTime;
 @Builder
 public class ForexRate {
 
-	private LocalDateTime timestamp;
+	private Instant timestamp;
 	private String baseCurrency;
 	private String counterCurrency;
 
@@ -28,7 +29,7 @@ public class ForexRate {
 		return Math.round(Math.abs(buyRate - sellRate) * 10000d) / 10000d;
 	}
 
-	public ForexRate(LocalDateTime timestamp, String baseCurrency, String counterCurrecy, Double buyRate, Double sellRate) {
+	public ForexRate(Instant timestamp, String baseCurrency, String counterCurrecy, Double buyRate, Double sellRate) {
 		this.timestamp = timestamp;
 		this.baseCurrency = baseCurrency;
 		this.counterCurrency = counterCurrecy;

@@ -50,6 +50,14 @@
 			<artifactId>reactor-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>au.com.dius</groupId>
+			<artifactId>pact-jvm-consumer-junit5</artifactId>
+			<version>4.0.10</version>
+			<scope>test</scope>
+		</dependency>
+
+
 
 		<dependency>
 			<groupId>com.github.tomakehurst</groupId>

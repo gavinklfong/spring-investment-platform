@@ -5,7 +5,9 @@ import space.gavinklfong.invest.forex.dtos.ForexRateBooking;
 import space.gavinklfong.invest.forex.dtos.ForexRateBookingReq;
 import space.gavinklfong.invest.forex.dtos.TradeAction;
 
-import java.time.LocalDateTime;
+import java.math.BigDecimal;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
@@ -17,14 +19,14 @@ public interface TestConstants {
             .counterCurrency("USD")
             .buyRate(1.1)
             .sellRate(1.2)
-            .timestamp(LocalDateTime.now())
+            .timestamp(Instant.now())
             .build();
 
     ForexRate GBP_EUR_RATE =  ForexRate.builder().baseCurrency("GBP")
             .counterCurrency("EUR")
             .buyRate(0.95)
             .sellRate(1.19)
-            .timestamp(LocalDateTime.now())
+            .timestamp(Instant.now())
             .build();
 
     List<ForexRate> FOREX_RATES = asList(GBP_USD_RATE, GBP_EUR_RATE);
@@ -34,6 +36,7 @@ public interface TestConstants {
             .counterCurrency("USD")
             .customerId(1L)
             .tradeAction(TradeAction.BUY)
+            .baseCurrencyAmount(BigDecimal.valueOf(1500))
             .build();
 
     ForexRateBooking RATE_BOOKING = ForexRateBooking.builder()
@@ -42,9 +45,9 @@ public interface TestConstants {
             .counterCurrency(RATE_BOOKING_REQ.getCounterCurrency())
             .customerId(RATE_BOOKING_REQ.getCustomerId())
             .tradeAction(RATE_BOOKING_REQ.getTradeAction())
-            .timestamp(LocalDateTime.now())
+            .timestamp(Instant.now())
             .id(1l)
-            .expiryTime(LocalDateTime.now().plusMinutes(15))
+            .expiryTime(Instant.now().plus(Duration.ofMinutes(15)))
             .rate(1.25)
             .build();
 }

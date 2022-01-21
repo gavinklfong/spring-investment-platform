@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.time.LocalDateTime;
 
 @Data
@@ -16,7 +17,7 @@ public class ForexRateBooking {
 
 	private Long id;
 	
-	private LocalDateTime timestamp;
+	private Instant timestamp;
 	private String baseCurrency;
 	private String counterCurrency;
 	private Double rate;
@@ -25,7 +26,7 @@ public class ForexRateBooking {
 	
 	private String bookingRef;
 	
-	private LocalDateTime expiryTime;
+	private Instant expiryTime;
 
 //	@ManyToOne
 //	@JoinColumn(name = "customer_id", referencedColumnName = "id")
@@ -33,8 +34,8 @@ public class ForexRateBooking {
 
 	private Long customerId;
 
-	public ForexRateBooking(Long id, LocalDateTime timestamp, String baseCurrency, String counterCurrency, Double rate,
-							String bookingRef, LocalDateTime expiryTime, Long customerId) {
+	public ForexRateBooking(Long id, Instant timestamp, String baseCurrency, String counterCurrency, Double rate,
+							String bookingRef, Instant expiryTime, Long customerId) {
 		super();
 		this.id = id;
 		this.timestamp = timestamp;

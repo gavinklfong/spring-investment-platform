@@ -1,0 +1,24 @@
+app:
+  forex:
+    service:
+      url: http://localhost:8082
+      api-key: 169b5bd4-01d0-4bfc-8b82-656b85c2cbdc
+
+logging:
+  level:
+    space.gavinklfong.invest.forex.clients.ForexClient: TRACE
+    au.com.dius.pact: DEBUG
+
+reactive:
+  feign:
+    circuit:
+      breaker:
+        enabled: false
+#    client:
+#      config:
+#        forex-client:
+#          options: # reactivefeign.webclient.WebReactiveOptions
+#            readTimeoutMillis: 2000
+#            writeTimeoutMillis: 2000
+#            responseTimeoutMillis: 2000
+
