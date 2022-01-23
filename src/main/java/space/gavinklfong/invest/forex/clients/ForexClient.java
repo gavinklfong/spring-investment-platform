@@ -8,9 +8,7 @@ import reactivefeign.spring.config.ReactiveFeignClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import space.gavinklfong.invest.forex.clients.config.ForexClientConfig;
-import space.gavinklfong.invest.forex.dtos.ForexRate;
-import space.gavinklfong.invest.forex.dtos.ForexRateBooking;
-import space.gavinklfong.invest.forex.dtos.ForexRateBookingReq;
+import space.gavinklfong.invest.forex.dtos.*;
 
 @ReactiveFeignClient(name="forex-client", url="${app.forex.service.url}", configuration = ForexClientConfig.class)
 public interface ForexClient {
@@ -24,4 +22,6 @@ public interface ForexClient {
     @RequestMapping(method = RequestMethod.POST, value = "/rates/book")
     Mono<ForexRateBooking> bookRate(@RequestBody ForexRateBookingReq req);
 
+    @RequestMapping(method = RequestMethod.POST, value = "/deals")
+    Mono<ForexTradeDeal> submitDeal(@RequestBody ForexTradeDealReq req);
 }

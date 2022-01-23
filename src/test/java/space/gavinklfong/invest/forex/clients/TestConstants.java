@@ -1,9 +1,6 @@
 package space.gavinklfong.invest.forex.clients;
 
-import space.gavinklfong.invest.forex.dtos.ForexRate;
-import space.gavinklfong.invest.forex.dtos.ForexRateBooking;
-import space.gavinklfong.invest.forex.dtos.ForexRateBookingReq;
-import space.gavinklfong.invest.forex.dtos.TradeAction;
+import space.gavinklfong.invest.forex.dtos.*;
 
 import java.math.BigDecimal;
 import java.time.Duration;
@@ -49,5 +46,15 @@ public interface TestConstants {
             .id(1l)
             .expiryTime(Instant.now().plus(Duration.ofMinutes(15)))
             .rate(1.25)
+            .build();
+
+    ForexTradeDealReq TRADE_DEAL_REQ = ForexTradeDealReq.builder()
+            .tradeAction(TradeAction.BUY)
+            .baseCurrency("GBP")
+            .counterCurrency("USD")
+            .customerId(1L)
+            .rate(1.25)
+            .rateBookingRef(UUID.randomUUID().toString())
+            .baseCurrencyAmount(BigDecimal.valueOf(1500))
             .build();
 }
