@@ -6,13 +6,19 @@ import au.com.dius.pact.consumer.dsl.PactDslJsonBody;
 import au.com.dius.pact.consumer.dsl.PactDslWithProvider;
 import au.com.dius.pact.consumer.junit5.PactConsumerTestExt;
 import au.com.dius.pact.consumer.junit5.PactTestFor;
+import au.com.dius.pact.core.model.PactSpecVersion;
 import au.com.dius.pact.core.model.RequestResponsePact;
 import au.com.dius.pact.core.model.annotations.Pact;
+import feign.Feign;
+import feign.codec.Decoder;
+import feign.codec.Encoder;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.cloud.openfeign.support.ResponseEntityDecoder;
+import org.springframework.cloud.openfeign.support.SpringEncoder;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -41,7 +47,7 @@ import static space.gavinklfong.invest.forex.clients.TestConstants.RATE_BOOKING_
 import static space.gavinklfong.invest.forex.clients.TestConstants.TRADE_DEAL_REQ;
 
 @ExtendWith(PactConsumerTestExt.class)
-@PactTestFor(providerName = "ForexTradeProvider", port = "8082")
+@PactTestFor(providerName = "ForexTradeProvider", port = "8082", pactVersion = PactSpecVersion.V3)
 @SpringBootTest(classes = {InvestApplication.class}, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("pact")
 @Slf4j
@@ -65,7 +71,7 @@ public class ForexClientPactTest {
                         .stringMatcher("counterCurrency", CURRENCY_REGEX, "USD")
                         .numberType("buyRate", 1.25)
                         .numberType("sellRate", 1.5)
-                        .timestamp("timestamp", TIMESTAMP_FORMAT, Instant.now())
+                        .datetime("timestamp", TIMESTAMP_FORMAT, Instant.now())
                         .closeObject()
                 )
                 .toPact();
@@ -86,7 +92,7 @@ public class ForexClientPactTest {
                         .stringMatcher("counterCurrency", CURRENCY_REGEX, "USD")
                         .numberType("buyRate", 1.25)
                         .numberType("sellRate", 1.5)
-                        .timestamp("timestamp", TIMESTAMP_FORMAT, Instant.now())
+                        .datetime("timestamp", TIMESTAMP_FORMAT, Instant.now())
                 )
                 .toPact();
     }
@@ -111,14 +117,14 @@ public class ForexClientPactTest {
                 .status(HttpStatus.OK.value())
                 .body(new PactDslJsonBody()
                         .numberType("id", 100)
-                        .timestamp("timestamp", TIMESTAMP_FORMAT, Instant.now())
+                        .datetime("timestamp", TIMESTAMP_FORMAT, Instant.now())
                         .stringMatcher("baseCurrency", CURRENCY_REGEX, "GBP")
                         .stringMatcher("counterCurrency", CURRENCY_REGEX, "USD")
                         .numberType("rate", 1.25)
                         .stringType("tradeAction", TradeAction.BUY.name())
                         .numberType("baseCurrencyAmount", 1500.25)
                         .uuid("bookingRef", UUID.randomUUID())
-                        .timestamp("expiryTime", TIMESTAMP_FORMAT, Instant.now().plus(Duration.ofMinutes(10)))
+                        .datetime("timestamp", TIMESTAMP_FORMAT, Instant.now().plus(Duration.ofMinutes(10)))
                         .numberType("customerId", 1L)
                 )
                 .toPact();
@@ -146,7 +152,7 @@ public class ForexClientPactTest {
                 .status(HttpStatus.OK.value())
                 .body(new PactDslJsonBody()
                         .numberType("id", 100)
-                        .timestamp("timestamp", TIMESTAMP_FORMAT, Instant.now())
+                        .datetime("timestamp", TIMESTAMP_FORMAT, Instant.now())
                         .stringMatcher("baseCurrency", CURRENCY_REGEX, "GBP")
                         .stringMatcher("counterCurrency", CURRENCY_REGEX, "USD")
                         .numberType("rate", 1.25)
@@ -178,7 +184,7 @@ public class ForexClientPactTest {
 
     @Test
     @PactTestFor(pactMethod = "bookRatePact")
-    void bookRatePactTest(MockServer mockServer) throws IOException {
+    void bookRatePactTest(MockServer mockServer) {
         Mono<ForexRateBooking> bookingMono = forexClient.bookRate(RATE_BOOKING_REQ);
         ForexRateBooking booking = bookingMono.block();
         assertNotNull(booking);
@@ -186,7 +192,7 @@ public class ForexClientPactTest {
 
     @Test
     @PactTestFor(pactMethod = "submitDealPact")
-    void submitDealPactTest(MockServer mockServer) throws IOException {
+    void submitDealPactTest(MockServer mockServer) {
         Mono<ForexTradeDeal> dealMono = forexClient.submitDeal(TRADE_DEAL_REQ);
         ForexTradeDeal deal = dealMono.block();
         assertNotNull(deal);
@@ -194,7 +200,7 @@ public class ForexClientPactTest {
 
     interface TestConstants {
         String CURRENCY_REGEX = "([A-Z]){3}";
-        String TIMESTAMP_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'";
+        String TIMESTAMP_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z'";
         String API_KEY_REGEX = "[A-Za-z0-9-]+";
     }
 }
