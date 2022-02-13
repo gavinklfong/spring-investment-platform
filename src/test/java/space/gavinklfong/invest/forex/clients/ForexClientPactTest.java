@@ -180,6 +180,11 @@ public class ForexClientPactTest {
         Mono<ForexRate> rateMono = forexClient.getLatestRate("GBP", "USD");
         ForexRate rate = rateMono.block();
         assertNotNull(rate);
+        assertNotNull(rate.getBaseCurrency());
+        assertNotNull(rate.getCounterCurrency());
+        assertNotNull(rate.getBuyRate());
+        assertNotNull(rate.getSellRate());
+        assertNotNull(rate.getTimestamp());
     }
 
     @Test
